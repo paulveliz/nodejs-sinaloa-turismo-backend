@@ -21,6 +21,7 @@ const publicPath = path.resolve(__dirname, 'public');
 
 // Definicion de rutas
 app.use( '/api/lugares', require('./routes/lugares') );
+app.use( '/api/usuarios', require('./routes/usuarios') );
 app.use(express.static(publicPath));
 
 server.listen( process.env.PORT, ( err ) => {

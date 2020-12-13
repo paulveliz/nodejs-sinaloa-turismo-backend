@@ -17,7 +17,7 @@ const UsuarioSchema = Schema({
     },
     rol: {
         type: Number,
-        required: true,
+        required: false,
         default: 0
 
     },
