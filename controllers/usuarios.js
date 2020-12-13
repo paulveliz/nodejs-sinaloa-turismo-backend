@@ -46,6 +46,56 @@ const crearUsuario = async ( req, res = response ) => {
     }
 };
 
+/**
+ * VALIDA EL LOGIN DE UN USUARIO.
+ * @param { Request } req 
+ * @param { Response } res 
+ */
+const login = async (req, res = response ) => {
+    const { telefono, clave } = req.body;
+    try {
+        
+        /**
+         *  Validar si el telefono no existe.
+         */
+        const usuarioDb = await Usuario.findOne({ telefono });
+        if(!usuarioDb) return res.status(404).json({
+            ok: false,
+            msg: 'Telefono o contraseña incorrectos.'
+        });
+
+        /**
+         *  Validar la password.
+         */
+        const claveEsValida = bcrypt.compareSync( clave, usuarioDb.clave );
+        if(!claveEsValida){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Telefono o contraseña incorrectos.'
+            });
+        }
+
+        /**
+         *  Generar token y retornar resultados.
+         */
+        const token = await generarJTW(usuarioDb.id);
+        return res.json({
+            ok: true,
+            usuario: usuarioDb,
+            token
+        });
+
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion al intentar iniciar sesion.',
+            excepcion: error
+        });
+    }
+}
+
 module.exports = {
-    crearUsuario
+    crearUsuario,
+    login
 }

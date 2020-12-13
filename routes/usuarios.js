@@ -1,5 +1,5 @@
 const express = require('express');
-const { crearUsuario } = require('../controllers/usuarios');
+const { crearUsuario, login } = require('../controllers/usuarios');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/valdiar-campos');
 const router = express.Router();
@@ -12,4 +12,9 @@ router.post('/new', [
     validarCampos
 ], crearUsuario );
 
+router.post('/login',[
+    check('telefono', 'El Telefono es obligatorio (000 - 000 - 0000).').isMobilePhone(),
+    check('clave', 'La contraseña es obligatoria.').not().isEmpty(),
+    validarCampos
+], login)
 module.exports = router;
