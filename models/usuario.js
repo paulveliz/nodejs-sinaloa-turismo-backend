@@ -7,37 +7,51 @@ const UsuarioSchema = Schema({
         required: true,
         unique: true
     },
+
     nombre: {
         type: String,
         required: true
     },
+
     imagen: {
         type: String,
         required: false,
     },
+
     rol: {
         type: Number,
         required: false,
         default: 0
 
     },
+
     online: {
         type: Boolean,
         required: false,
         default: false,
     },
+
     creado: { 
         type: Date, 
         default: Date.now() 
     },
+
     ultima_conexion: { 
         type: Date,
+        default: Date.now(),
         required: false
     },
+
     clave: { 
         type: String,
         required: true
     },
+
+    estatus: {
+        type: Number,
+        required: false,
+        default: 1
+    }
 
 });
 
