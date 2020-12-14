@@ -1,12 +1,51 @@
 /***
  *    PATH: api/lugares
-*/
+***/
 const express = require('express');
 const router = express.Router();
+const { check } = require('express-validator');
+const { obtenerLugares, obtenerLugarPorId, crearNuevo } = require('../controllers/lugares');
+const { validarCampos } = require('../middlewares/valdiar-campos');
 
+/**
+ * Obtener todos los lugares por order descendente.
+ */
+router.get('/todos', obtenerLugares );
 
-router.get('/', async (req, res) => {
+/**
+ * Obtener un lugar por su Id.
+ */
+router.get('/:lugarId', obtenerLugarPorId );
 
-});
+/**
+ * Obtener los lugares mas votados.
+ */
+router.get('/mas_votados', obtenerLugarPorId );
 
+/**
+ * Crear un nuevo lugar
+ */
+router.post('/nuevo', [
+    check('encabezado.titulo', 'El encabezado debe tener un titulo de al menos 3 caracteres y un maximo de 15.')
+        .not()
+        .isEmpty()
+        .isLength({max: 15, min: 3}),
+    check('encabezado.imagen', 'El encabezado debe tener una imagen representada en un url.')
+        .not()
+        .isEmpty(),
+    check('contenido.de_pago', 'El contenido del lugar debe dar a conocer si es de pago o no (Booleano).')
+        .not()
+        .isEmpty()
+        .isBoolean(),
+    check('creado_por.id', 'Debe introducir el id del usuario.')
+        .not()
+        .isEmpty(),
+    check('creado_por.nombre', 'Debe introducir el nombre del usuario.')
+        .not()
+        .isEmpty(),
+    check('creado_por.imagen', 'Debe introducir la fotografia del usuario.')
+        .not()
+        .isEmpty(),
+    validarCampos
+], crearNuevo);
 module.exports = router;
