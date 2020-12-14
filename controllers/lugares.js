@@ -1,6 +1,4 @@
-const bcrypt = require('bcrypt');
 const { response } = require('express');
-const { generarJTW } = require('../helpers/jwt');
 const Lugar = require('../models/lugar');
 
 /**

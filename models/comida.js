@@ -46,10 +46,26 @@ const ComidaSchema = Schema({
         }]
     },
 
+    me_gusta: [{
+        usuario_id: {
+            type: String,
+            required: false
+        },
+        usuario: {
+            type: String,
+            required: false
+        },
+        fecha: {
+            type: Date,
+            required: false,
+            default: Date.now()
+        },
+    }],
+
     comentarios: [{
         usuario: {
             type: String,
-            required: true
+            required: false
         },
         fecha: {
             type: Date,
@@ -58,26 +74,14 @@ const ComidaSchema = Schema({
         },
         comentario: {
             type: String,
-            required: true
+            required: false
         }
-    }],
-
-    me_gusta: [{
-        usuario: {
-            type: String,
-            required: true
-        },
-        fecha: {
-            type: Date,
-            required: false,
-            default: Date.now()
-        },
     }],
 
     imagenes: [{
         titulo: {
             type: String,
-            required: true
+            required: false
         },
         descripcion: {
             type: String,
@@ -86,9 +90,37 @@ const ComidaSchema = Schema({
         },
         imagen: {
             type: String,
-            required: true
+            required: false
         }
-    }]
+    }],
+
+    creado_por: {
+        usuario_id: {
+            type: String,
+            required: true
+        },
+        usuario_nombre: {
+            type: String,
+            required: true
+        },
+        usuario_imagen: {
+            type: String,
+            required: false
+        }
+    },
+
+    fecha_creacion: {
+        type: Date,
+        required: false,
+        default: Date.now()
+    },
+
+    estatus: {
+        type: Number,
+        default: 1,
+        required: false
+    }
+
 
 });
 

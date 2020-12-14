@@ -35,6 +35,22 @@ const LugarSchema = Schema({
         }
     },
 
+    me_gusta: [{
+        usuario_id: {
+            type: String,
+            required: false
+        },
+        usuario: {
+            type: String,
+            required: false
+        },
+        fecha: {
+            type: Date,
+            required: false,
+            default: Date.now()
+        },
+    }],
+
     comentarios: [{
         usuario: {
             type: String,
@@ -49,18 +65,6 @@ const LugarSchema = Schema({
             type: String,
             required: false
         }
-    }],
-
-    me_gusta: [{
-        usuario: {
-            type: String,
-            required: false
-        },
-        fecha: {
-            type: Date,
-            required: false,
-            default: Date.now()
-        },
     }],
 
     imagenes: [{
@@ -80,15 +84,15 @@ const LugarSchema = Schema({
     }],
 
     creado_por: {
-        id: {
+        usuario_id: {
             type: String,
             required: true
         },
-        nombre: {
+        usuario_nombre: {
             type: String,
             required: true
         },
-        imagen: {
+        usuario_imagen: {
             type: String,
             required: false
         }

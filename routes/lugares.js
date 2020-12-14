@@ -4,8 +4,8 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
-const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus } = require('../controllers/lugares');
 const { validarCampos } = require('../middlewares/valdiar-campos');
+const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus } = require('../controllers/lugares');
 
 /**
  * Obtener todos los lugares por order descendente.
@@ -38,13 +38,13 @@ router.post('/nuevo', [
         .not()
         .isEmpty()
         .isBoolean(),
-    check('creado_por.id', 'Debe introducir el id del usuario.')
+    check('creado_por.usuario_id', 'Debe introducir el id del usuario.')
         .not()
         .isEmpty(),
-    check('creado_por.nombre', 'Debe introducir el nombre del usuario.')
+    check('creado_por.usuario_nombre', 'Debe introducir el nombre del usuario.')
         .not()
         .isEmpty(),
-    check('creado_por.imagen', 'Debe introducir la fotografia del usuario.')
+    check('creado_por.usuario_imagen', 'Debe introducir la fotografia del usuario.')
         .not()
         .isEmpty(),
     validarCampos
