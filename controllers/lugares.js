@@ -99,9 +99,80 @@ const crearNuevo = async ( req, res = response ) => {
     }
 };
 
+/**
+ * ACTUALIZAR ENCABEZADO, CONTENIDO E IMAGENES DE UN LUGAR
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+const actualizarExistente = async (req, res = response) => {
+    const { id, encabezado, contenido, imagenes } = req.body;
+    const { lugarId } = req.params;
+    try {
+        /**
+         *  Validar params contra body
+         */
+        if(id != lugarId) return res.status(401).json({
+            ok: false,
+            msg: 'Operacion no permitida.'
+        });
+        
+        /**
+         *  Validar si el lugar es correcto.
+         */
+        const lugar = await Lugar.findById({ _id: id });
+        if(!lugar) return res.status(404).json({
+            ok: false,
+            msg: 'El lugar solicidato no existe.'
+        });
+
+        /**
+         *  Actualizar lugar.
+         */
+        lugar.encabezado = encabezado;
+        lugar.contenido = contenido;
+        lugar.imagenes = imagenes;
+        await lugar.save();
+        return res.json({
+            ok: true,
+            msg: 'El lugar fue actualizado con exito.',
+            lugar
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error interno intentando actualizar la informacion de un lugar.',
+            excepcion: error
+        });
+    }
+};
+
+/**
+ *  CAMBIAR ESTATUS DE UN LUGAR
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+const cambiarEstatus = (req, res = response) => {
+    const { lugarId } = req.params;
+    const { id, nuevo_estatus } = req.body;
+
+    try {
+        // TODO: IMPLEMENTAR MANEJO PARA DAR DE BAJA.
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion al intentar cambiar el estatus de un lugar.',
+            excepcion: error
+        }); 
+    }
+};
+
 module.exports = {
     obtenerLugares,
     obtenerLugarPorId,
     obtenerMasVotados,
-    crearNuevo
+    crearNuevo,
+    actualizarExistente,
+    cambiarEstatus
 }
