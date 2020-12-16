@@ -24,7 +24,7 @@ const NoticiaSchema = Schema({
             type: String,
             required: false
         },
-        usuario: {
+        usuario_nombre: {
             type: String,
             required: false
         },
@@ -32,11 +32,15 @@ const NoticiaSchema = Schema({
             type: Date,
             required: false,
             default: Date.now()
-        },
+        }
     }],
 
     comentarios: [{
-        usuario: {
+        usuario_id: {
+            type: String,
+            required: false
+        },
+        usuario_nombre: {
             type: String,
             required: false
         },
