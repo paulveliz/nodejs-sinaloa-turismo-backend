@@ -344,6 +344,19 @@ const cambiarEstatus = (req, res = response) => {
     }
 };
 
+const renewToken = async ( req, res = response ) => {
+  
+    const token = await generarJTW(req.uid);
+    const usuario = await Usuario.findById(req.uid);
+
+    return res.json({
+        ok: true,
+        usuario,
+        token
+    });
+    
+};
+
 module.exports = {
     crearUsuario,
     login,
@@ -351,5 +364,6 @@ module.exports = {
     cambiarClave,
     cambiarRol,
     cambiarEstatus,
-    obtenerUsuarioPorId
+    obtenerUsuarioPorId,
+    renewToken
 }

@@ -2,11 +2,18 @@
  *      PATH: api/usuarios
 */
 const express = require('express');
-const { crearUsuario, login, actualizarUsuario, cambiarClave, cambiarRol, cambiarEstatus, obtenerUsuarioPorId } = require('../controllers/usuarios');
+const { crearUsuario, login, actualizarUsuario, cambiarClave, cambiarRol, cambiarEstatus, obtenerUsuarioPorId, renewToken } = require('../controllers/usuarios');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/valdiar-campos');
+const { validarJWT } = require('../middlewares/validat-jwt');
 const router = express.Router();
 
+/**
+ *  Renovar el jwt
+ */
+router.get('/renew', [
+    validarJWT
+], renewToken);
 
 /***
  * Obtener usuario por su Id
@@ -70,6 +77,4 @@ router.put('/cambiar_estatus/:userId', [
     check('nuevo_estatus', 'El nuevo estatus debe ser obligatorio & en expresion numerica.').not().isEmpty().isNumeric(),
     validarCampos
 ], cambiarEstatus);
-
-
 module.exports = router;
