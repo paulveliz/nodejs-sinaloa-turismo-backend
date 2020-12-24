@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/valdiar-campos');
-const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus } = require('../controllers/lugares');
+const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus, meGusta, comentar } = require('../controllers/lugares');
 
 /**
  * Obtener todos los lugares por order descendente.
@@ -29,8 +29,7 @@ router.get('/:lugarId', obtenerLugarPorId );
 router.post('/nuevo', [
     check('encabezado.titulo', 'El encabezado debe tener un titulo de al menos 3 caracteres y un maximo de 15.')
         .not()
-        .isEmpty()
-        .isLength({max: 15, min: 3}),
+        .isEmpty(),
     check('encabezado.imagen', 'El encabezado debe tener una imagen representada en un url.')
         .not()
         .isEmpty(),
@@ -77,4 +76,26 @@ router.put('/cambiar_estatus/:lugarId', [
     validarCampos
 ], cambiarEstatus );
 
+/**
+ * Me gusta a un lugar
+ */
+
+router.put('/me_gusta/:lugarId',[
+    check('usuario_id', 'Obligatorio').not().isEmpty(),
+    check('usuario_nombre', 'Obligatorio').not().isEmpty(),
+    check('lugar_id', 'Obligatorio').not().isEmpty(),
+    validarCampos
+], meGusta)
+
+/**
+ * Comentar un lugar
+ */
+
+router.put('/comentar/:lugarId',[
+    check('usuario_id', 'Obligatorio').not().isEmpty(),
+    check('usuario_nombre', 'Obligatorio').not().isEmpty(),
+    check('lugar_id', 'Obligatorio').not().isEmpty(),
+    check('comentario', 'Obligatorio').not().isEmpty(),
+    validarCampos
+], comentar)
 module.exports = router;

@@ -1,4 +1,4 @@
-const { response } = require('express');
+const { response, json } = require('express');
 const Lugar = require('../models/lugar');
 
 /**
@@ -58,7 +58,7 @@ const obtenerLugarPorId = async (req, res = response) => {
 
 const obtenerMasVotados = async ( req, res = response ) => {
     try {
-        const lugares = await Lugar.find().sort({ me_gusta: -1 });
+        const lugares = await Lugar.find().sort({ _id: -1 });
         return res.json({
             ok: true,
             msg: 'Lugares mas votados obtenidos con exito',
@@ -166,11 +166,121 @@ const cambiarEstatus = (req, res = response) => {
     }
 };
 
+const meGusta = async (req, res = response) => {
+    const { lugarId } = req.params;
+    const { usuario_id, lugar_id, usuario_nombre } = req.body;
+
+    try {
+        /**
+         *  Validar params
+         */
+        if(lugarId != lugar_id) return res.status(400).json({
+            ok: false,
+            msg: "Operacion no permitida."
+        });
+
+        /**
+         *  Validar si el lugar es correcto.
+         */
+        const lugar = await Lugar.findById({ _id: lugar_id });
+        if(!lugar) return res.status(404).json({
+            ok: false,
+            msg: 'El lugar solicidato no existe.'
+        });
+
+        /**
+         * Validar si le tiene me gusta.
+         */
+        const usuarioTieneLike = lugar.me_gusta.find(e => e.usuario_id == usuario_id);
+        if(usuarioTieneLike){
+           const newLugar = lugar.me_gusta.filter(m => m.usuario_id != usuario_id);
+           lugar.me_gusta = newLugar;
+           await lugar.save();
+           return res.json({
+               ok: true,
+               msg: 'Dejo de gustarle.',
+               me_gusta: newLugar
+           });
+        }else{
+            lugar.me_gusta.push({
+                usuario_id,
+                usuario_nombre
+            });
+            await lugar.save(); // ????
+            return res.json({
+                ok: true,
+                msg: 'Le gusta.',
+                me_gusta: lugar.me_gusta
+            });
+        }
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion al intentar cambiar el estatus de un lugar.',
+            excepcion: error
+        }); 
+    }
+};
+
+
+const comentar = async (req, res = response) => {
+    const { lugarId } = req.params;
+    const { usuario_id, lugar_id, usuario_nombre, comentario } = req.body;
+
+    try {
+        /**
+         *  Validar params
+         */
+        if(lugarId != lugar_id) return res.status(400).json({
+            ok: false,
+            msg: "Operacion no permitida."
+        });
+
+        /**
+         *  Validar si el lugar es correcto.
+         */
+        const lugar = await Lugar.findById({ _id: lugar_id });
+        if(!lugar) return res.status(404).json({
+            ok: false,
+            msg: 'El lugar solicidato no existe.'
+        });
+
+        /**
+         * Comentar
+         */
+        lugar.comentarios.push({
+            usuario_id,
+            usuario_nombre,
+            comentario
+        });
+        await lugar.save(); // ????
+        // Obtener ultimo comentario acorde su fecha.
+        const newComment = lugar.comentarios.reduce((a, b) => {
+            return ( new Date(a.fecha) > new Date(b.fecha) && a.usuario_id == usuario_id && b.usuario_id == usuario_id) ? a : b;
+        });
+        return res.json({
+            ok: true,
+            msg: 'Comentado.',
+            comentario: newComment
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion al intentar cambiar el estatus de un lugar.',
+            excepcion: error
+        }); 
+    }
+};
+
 module.exports = {
     obtenerLugares,
     obtenerLugarPorId,
     obtenerMasVotados,
     crearNuevo,
     actualizarExistente,
-    cambiarEstatus
+    cambiarEstatus,
+    meGusta,
+    comentar
 }
