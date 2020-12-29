@@ -58,7 +58,7 @@ const obtenerLugarPorId = async (req, res = response) => {
 
 const obtenerMasVotados = async ( req, res = response ) => {
     try {
-        const lugares = await Lugar.find().sort({ _id: -1 });
+        const lugares = await Lugar.find({ estatus: 1 }).sort({ _id: -1 });
         return res.json({
             ok: true,
             msg: 'Lugares mas votados obtenidos con exito',
@@ -151,12 +151,42 @@ const actualizarExistente = async (req, res = response) => {
  * @param {Request} req 
  * @param {Response} res 
  */
-const cambiarEstatus = (req, res = response) => {
+const cambiarEstatus = async (req, res = response) => {
     const { lugarId } = req.params;
-    const { id, nuevo_estatus } = req.body;
+    const { usuario_id, lugar_id, nuevo_estatus } = req.body;
 
     try {
-        // TODO: IMPLEMENTAR MANEJO PARA DAR DE BAJA.
+        /**
+         *  Validar params
+         */
+        if(lugarId != lugar_id) return res.status(400).json({
+            ok: false,
+            msg: "Operacion no permitida."
+        });
+
+        /**
+         *  Validar que el usuario sea el creador.
+         */
+         const lugar = await Lugar.findOne({
+            _id: lugar_id, 
+            'creado_por.usuario_id': usuario_id
+        });
+         console.log('lugar :>> ', lugar);
+         if(!lugar) return res.status(404).json({
+            ok: false,
+            msg: "El lugar no pertenece al usuario"
+         });
+
+         /**
+          *  Eliminar  lugar
+          */
+         lugar.estatus = nuevo_estatus;
+         await lugar.save();
+         return res.json({
+             ok: true,
+             msg: 'Estatus cambiado con exito.'
+         });
+
     } catch (error) {
         return res.status(500).json({
             ok: false,

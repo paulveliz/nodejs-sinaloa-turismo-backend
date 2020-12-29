@@ -71,8 +71,9 @@ router.put('/actualizar/:lugarId', [
  * Cambia el estatus de un lugar.
  */
 router.put('/cambiar_estatus/:lugarId', [
-    check('id', 'El id del lugar es obligatorio.').not().isEmpty(),
-    check('nuevo_estatus', 'El nuevo estatus debe ser obligatorio & en expresion numerica.').not().isEmpty().isNumeric(),
+    check('nuevo_estatus', 'El nuevo estatus debe ser obligatorio & en expresion numerica.').not().isEmpty(),
+    check('lugar_id', 'El identificador del lugar es obligatorio.').not().isEmpty(),
+    check('usuario_id', 'El identificador del propietario de la publicacion es obligatorio.').not().isEmpty(),
     validarCampos
 ], cambiarEstatus );
 
