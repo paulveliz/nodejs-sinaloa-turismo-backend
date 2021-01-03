@@ -58,7 +58,7 @@ const obtenerLugarPorId = async (req, res = response) => {
 
 const obtenerMasVotados = async ( req, res = response ) => {
     try {
-        const lugares = await Lugar.find({ estatus: 1 }).sort({ _id: -1 });
+        const lugares = await Lugar.find({ estatus: 2 }).sort({ _id: -1 });
         return res.json({
             ok: true,
             msg: 'Lugares mas votados obtenidos con exito',
@@ -68,6 +68,40 @@ const obtenerMasVotados = async ( req, res = response ) => {
         res.status(500).json({
             ok: false,
             msg: 'Error interno intentando obtener lugares mas votados.',
+            excepcion: error
+        });
+    }
+};
+
+const obtenerPendientes = async ( req, res = response ) => {
+    try {
+        const lugares = await Lugar.find({ estatus: 1 }).sort({ _id: -1 });
+        return res.json({
+            ok: true,
+            msg: 'Lugares pendientes obtenidos con exito',
+            lugares
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error interno intentando obtener lugares pendientes.',
+            excepcion: error
+        });
+    }
+};
+
+const obtenerEliminados = async ( req, res = response ) => {
+    try {
+        const lugares = await Lugar.find({ estatus: 0 }).sort({ _id: -1 });
+        return res.json({
+            ok: true,
+            msg: 'Lugares eliminados obtenidos con exito',
+            lugares
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error interno intentando obtener lugares eliminados.',
             excepcion: error
         });
     }
@@ -171,7 +205,6 @@ const cambiarEstatus = async (req, res = response) => {
             _id: lugar_id, 
             'creado_por.usuario_id': usuario_id
         });
-         console.log('lugar :>> ', lugar);
          if(!lugar) return res.status(404).json({
             ok: false,
             msg: "El lugar no pertenece al usuario"
@@ -312,5 +345,7 @@ module.exports = {
     actualizarExistente,
     cambiarEstatus,
     meGusta,
-    comentar
+    comentar,
+    obtenerPendientes,
+    obtenerEliminados
 }
