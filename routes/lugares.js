@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/valdiar-campos');
-const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus, meGusta, comentar, obtenerPendientes, obtenerEliminados } = require('../controllers/lugares');
+const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus, meGusta, comentar, obtenerPendientes, obtenerEliminados, crearCategoria } = require('../controllers/lugares');
 
 /**
  * Obtener todos los lugares por order descendente.
@@ -109,6 +109,17 @@ router.put('/comentar/:lugarId',[
     check('comentario', 'Obligatorio').not().isEmpty(),
     validarCampos
 ], comentar);
+
+
+/**
+ * Crear categoria
+ */
+router.post('/nuevo/categoria', [
+    check('nombre', 'la categoria debe llevar un nombre.')
+        .not()
+        .isEmpty(),
+    validarCampos
+], crearCategoria );
 
 
 module.exports = router;

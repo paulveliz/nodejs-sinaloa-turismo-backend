@@ -112,6 +112,12 @@ const LugarSchema = Schema({
         type: Number,
         default: 1,
         required: false
+    },
+
+    categoria: {
+        type: String,
+        required: false,
+        default: "Otros"
     }
 
 });

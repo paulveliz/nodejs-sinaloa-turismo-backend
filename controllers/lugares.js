@@ -1,5 +1,6 @@
 const { response, json } = require('express');
 const Lugar = require('../models/lugar');
+const LugarCategoria = require('../models/lugar_categoria');
 
 /**
  * OBTENER TODOS LOS LUGARES
@@ -337,6 +338,24 @@ const comentar = async (req, res = response) => {
     }
 };
 
+const crearCategoria = async ( req, res = response ) => {
+    try {
+        const lugarCat = new LugarCategoria(req.body);
+        await lugarCat.save();
+        return res.json({
+            ok: true,
+            msg: 'Categoria creada con exito',
+            lugarCat
+        });
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion al intentar cambiar el estatus de un lugar.',
+            excepcion: error
+        }); 
+    }
+};
+
 module.exports = {
     obtenerLugares,
     obtenerLugarPorId,
@@ -347,5 +366,6 @@ module.exports = {
     meGusta,
     comentar,
     obtenerPendientes,
-    obtenerEliminados
+    obtenerEliminados,
+    crearCategoria
 }
