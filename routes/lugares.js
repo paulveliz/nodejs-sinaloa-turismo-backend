@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/valdiar-campos');
-const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus, meGusta, comentar, obtenerPendientes, obtenerEliminados, crearCategoria } = require('../controllers/lugares');
+const { obtenerLugares, obtenerLugarPorId, crearNuevo, actualizarExistente, obtenerMasVotados, cambiarEstatus, meGusta, comentar, obtenerPendientes, obtenerEliminados, crearCategoria, obtenerCategorias, cambiarCategoriaEstatus } = require('../controllers/lugares');
 
 /**
  * Obtener todos los lugares por order descendente.
@@ -28,10 +28,14 @@ router.get('/pendientes', obtenerPendientes );
 router.get('/eliminados', obtenerEliminados );
 
 /**
+ * Obtener categorias
+ */
+router.get('/categorias', obtenerCategorias );
+
+/**
  * Obtener un lugar por su Id.
  */
 router.get('/:lugarId', obtenerLugarPorId );
-
 
 /**
  * Crear un nuevo lugar
@@ -121,5 +125,17 @@ router.post('/nuevo/categoria', [
     validarCampos
 ], crearCategoria );
 
+/**
+ * Cambiar estado de una categoria
+*/
+router.put('/cambiar_estatus/categoria/:categoriaId', [
+    check('categoria_id', 'El identificador de la categoria es obligatorio')
+    .not()
+    .isEmpty(),
+    check('nuevo_estatus', 'El nuevo estatus es obligatorio')
+    .not()
+    .isEmpty(),
+    validarCampos
+], cambiarCategoriaEstatus);
 
 module.exports = router;

@@ -318,7 +318,7 @@ const comentar = async (req, res = response) => {
             usuario_nombre,
             comentario
         });
-        await lugar.save(); // ????
+        await lugar.save();
         // Obtener ultimo comentario acorde su fecha.
         const newComment = lugar.comentarios.reduce((a, b) => {
             return ( new Date(a.fecha) > new Date(b.fecha) && a.usuario_id == usuario_id && b.usuario_id == usuario_id) ? a : b;
@@ -338,6 +338,9 @@ const comentar = async (req, res = response) => {
     }
 };
 
+/**
+ * Crear nueva categoria
+ */
 const crearCategoria = async ( req, res = response ) => {
     try {
         const lugarCat = new LugarCategoria(req.body);
@@ -356,6 +359,67 @@ const crearCategoria = async ( req, res = response ) => {
     }
 };
 
+/**
+ *  Obtener las categorias existentes
+ */
+const obtenerCategorias = async (req, res = response) => {
+    try {
+        const categorias = await LugarCategoria.find({estatus: 1}).sort({_id: -1});
+        return res.json({
+            ok: true,
+            msg: 'Categorias obtenidas con exito',
+            categorias
+        });
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion intentando obtener las categorias en el sistema.',
+            excepcion: error
+        }); 
+    }
+};
+
+/**
+ *  Dar de baja una categoria
+ */
+const cambiarCategoriaEstatus = async (req, res = response) => {
+    const { categoriaId } = req.params;
+    const { categoria_id, nuevo_estatus } = req.body;
+    try {
+
+        /**
+         *  Validar params
+         */
+        if(categoriaId != categoria_id) return res.status(400).json({
+            ok: false,
+            msg: "Operacion no permitida."
+        });
+
+        /**
+         *  Eliminar  cat
+         */
+        const categoria = await LugarCategoria.findById({_id: categoria_id});
+        if(!categoria) return res.status(404).json({
+            ok: false,
+            msg: 'La categoria no existe en el sistema.'
+        });
+        categoria.estatus = nuevo_estatus;
+        await categoria.save();
+        return res.json({
+            ok: true,
+            msg: 'Estatus cambiado con exito.',
+            categoria
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Ocurrio una excepcion intentando cambiar el estatus de la categoria',
+            excepcion: error
+        }); 
+    } 
+};
+
 module.exports = {
     obtenerLugares,
     obtenerLugarPorId,
@@ -367,5 +431,7 @@ module.exports = {
     comentar,
     obtenerPendientes,
     obtenerEliminados,
-    crearCategoria
+    crearCategoria,
+    obtenerCategorias,
+    cambiarCategoriaEstatus
 }
